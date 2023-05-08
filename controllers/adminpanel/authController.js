@@ -75,7 +75,19 @@ exports.getAllUsers = async(req, res)=>{
             // fetch the role document using its name
             const role = await Role.findOne({ name: roleName });
             // add roleId filter based on the fetched role document
-            filter.roleId = role._id;
+            if(role){
+                filter.roleId = role._id;
+            }else {
+                // return empty array if role is null
+                res.json({
+                    status: true,
+                    users: [],
+                    message: message.user.getUser
+                })
+                return;
+            }
+           
+           
         }
         const users = await User.find(filter).populate({
             path: 'roleId',

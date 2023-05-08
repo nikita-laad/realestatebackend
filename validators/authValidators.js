@@ -78,9 +78,6 @@ exports.deleteAndEditUserValidator = [
 // End
 // Update user
 exports.updateUserValidator = [
-    // param('id')
-    // .notEmpty().withMessage(message.user.required),
-
     body('name')
     .notEmpty().withMessage(message.name.required)
     .isLength({min:3}).withMessage(message.name.length),
@@ -107,14 +104,7 @@ exports.updateUserValidator = [
         throw new Error(message.mobile.taken);
     }
     return true;
-   }),
-   body('password')
-    .optional({checkFalsy: true})
-    .isLength({ min: 6 }).withMessage(message.password.length)
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
-    .withMessage(message.password.match),
-    body('roleId')
-    .notEmpty().withMessage(message.role.required)
+   })
 ];
 //check validator
 exports.validate = (req, res, next) => {
