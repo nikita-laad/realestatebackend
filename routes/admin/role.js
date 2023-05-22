@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const middleware = require('../middleware/middleware')
-const roleCountroller = require('../controllers/adminpanel/roleController');
-const {createRoleValidator, validate, deleteAndEditRoleValidator, updateRoleValidation} = require('../validators/roleValidator');
+const middleware = require('../../middleware/middleware')
+const roleCountroller = require('../../controllers/adminpanel/roleController');
+const {createRoleValidator, validate, deleteAndEditRoleValidator, updateRoleValidation} = require('../../validators/admin/roleValidator');
 
 //Route 1: Get Role GET "api/roles" Login required
-router.get('/roles',middleware, roleCountroller.getAllRoles);
+router.post('/roles',middleware, roleCountroller.getAllRoles);
 //Route 2: Create Role POST "api/roles" Login required
-router.post('/roles',middleware, createRoleValidator, validate, roleCountroller.createRole);
+router.post('/roles/create',middleware, createRoleValidator, validate, roleCountroller.createRole);
 // Route 3 : Edit Role GET "api/roles" Login required
 router.get('/roles/:id',middleware, deleteAndEditRoleValidator, validate, roleCountroller.editRole);
 //Route 4: Update Role PUT "api/roles/:id". Login required

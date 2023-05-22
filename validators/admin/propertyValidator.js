@@ -1,6 +1,6 @@
 const {body, check,validationResult} = require('express-validator');
-const message = require('../helper/admin/messages');
-const Property = require('../models/Property')
+const message = require('../../helper/admin/messages');
+const Property = require('../../models/Property')
 //Create property
 exports.createPropertyValidator = [
     body('name')
