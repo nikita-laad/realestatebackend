@@ -6,9 +6,15 @@ exports.createPropertyValidator = [
     body('name')
     .notEmpty().withMessage(message.name.required)
     .isLength({min:3}).withMessage(message.name.length),
-
     body('price')
     .notEmpty().withMessage(message.property.price),
+    body('location')
+    .notEmpty().withMessage(message.property.location),
+    body('squareFeet')
+    .notEmpty().withMessage(message.property.square_feet),
+    body('bedrooms')
+    .notEmpty().withMessage(message.property.bedrooms),
+    body('bathrooms'),
     body('propertyRealtor')
     .notEmpty().withMessage(message.user.propertyRealtor)
 ]

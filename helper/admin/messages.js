@@ -21,7 +21,14 @@ module.exports = {
     password: {
         required: 'Password is required',
         match:'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-        length: 'Password must be at least 6 characters'
+        length: 'Password must be at least 6 characters',
+        matchToConfimPassword:"matchToConfimPassword",
+        matchToPassword:"matchToPassword",
+        confirmMatch:"The confirmation password does not match the password.",
+        confirmRequired: 'Confirm assword is required',
+        currentPasswordIncorrect:"Current password is incorrect",
+        differentPassword:'New password must be different from the old password',
+        passwordChange:'Password changed successfully'
     },
     // End
     // Property
@@ -62,11 +69,25 @@ module.exports = {
         deleteUser: "User has been deleted!",
         required: 'User is required',
         propertyRealtor: ' Property realtor is required',
+        profileUpdated:"Profile updated"
 
     },
     // End
     // Dashboard
     dashBoardCount: 'Count fetch seccessfully!',
     // End
-    notFound: 'Id not found'
+    notFound: 'Id not found',
+    // inquiry
+    inquiry:{
+        message: "Message is required",
+        property: "Property is required",
+        getInquiry: "Inquiry fetch successfully!",
+        createInquiry: "Inquiry added successfully!",
+        updateInquiry: "Inquiry updated successfully!",
+        deleteInquiry: "Inquiry has been deleted!",
+        notFound:"Property not found",
+        getRealtors: "Realtor fetch successfully!",
+        notRealtorFound:"No realtors found"
+    }
+    // End
 }

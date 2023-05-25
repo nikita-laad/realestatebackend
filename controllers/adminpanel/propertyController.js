@@ -78,7 +78,6 @@ exports.getAllProperties = async (req, res) => {
         message: message.property.getProperty
       });
     } catch (error) {
-        console.log(error)
       res.json({
             status: false,
             message: message.auth.serverError
@@ -89,7 +88,7 @@ exports.getAllProperties = async (req, res) => {
 //Create Property
 exports.createProperty = async(req, res)=>{
     try {
-        const {name, price, location, squareFeet, garage, bedrooms, bathrooms,propertyRealtor, status} = req.body;
+        const {name, price, location, squareFeet, garage, bedrooms, bathrooms,propertyRealtor, status, description} = req.body;
         const slug = await generateUniqueSlug(name, Property);
         // Check if the role ID exists
         const existingpropertyRealtor = await User.findById(propertyRealtor);
@@ -109,6 +108,7 @@ exports.createProperty = async(req, res)=>{
             squareFeet, 
             propertyRealtor,
             user: req.user.id,
+            description,
             status,
             slug
         });
@@ -120,7 +120,6 @@ exports.createProperty = async(req, res)=>{
             message: message.property.createProperty
         })
     } catch (error) {
-        console.log(error)
         res.json({
             status: false,
             message: message.auth.serverError
@@ -132,7 +131,7 @@ exports.createProperty = async(req, res)=>{
 exports.updateProperty = async(req, res) => {
     try {
 
-        const {name, price, location, squareFeet, garage, bedrooms, bathrooms, propertyRealtor, status} = req.body;
+        const {name, price, location, squareFeet, garage, bedrooms, bathrooms, propertyRealtor, status, description} = req.body;
         // Check if the role ID exists
         const existingpropertyRealtor = await User.findById(propertyRealtor);
         if (!existingpropertyRealtor) {
@@ -150,6 +149,7 @@ exports.updateProperty = async(req, res) => {
             location, 
             squareFeet,
             propertyRealtor,
+            description,
             status
         } 
         }, {new: true});
@@ -167,26 +167,28 @@ exports.updateProperty = async(req, res) => {
 }
 // End
 // Update property 
-exports.editProperty = async (req, res) =>{
-    try {
-        //property Edit
-       const property =  await Property.findById(req.params.id).populate(
-        {
-            path: 'propertyRealtor',
-            select: 'name email, mobile'
-        });
-        res.json({
-            status: true,
-            property: property,
-            message:message.property.getProperty
-        });
-        //End
-    } catch (error) {
-        res.json({
-            status: false,
-            message: message.auth.serverError
-        });   
-    }
+exports.editProperty = async (req, res) => {
+  try {
+      const property = await Property.findById(req.params.id).populate({
+          path: 'propertyRealtor',
+          select: 'name email mobile'
+      });
+
+      // Add statusText to the property object
+      const propertyWithStatusText = property.toObject();
+      propertyWithStatusText.statusText = property.statusText;
+
+      res.json({
+          status: true,
+          property: propertyWithStatusText,
+          message: message.property.getProperty
+      });
+  } catch (error) {
+      res.json({
+          status: false,
+          message: message.auth.serverError
+      });
+  }
 }
 // End 
 //Delete Property

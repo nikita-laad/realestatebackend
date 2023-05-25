@@ -10,7 +10,8 @@ const constants = require('../../helper/constants');
 //Create User
 exports.createUser = async(req, res)=>{
     try {
-        const {name, email, mobile, password, roleId, status} =req.body;
+        let {name, email, mobile, password, roleId, status} =req.body;
+        email = email.toLowerCase(); // Convert name to lowercase
         // Check if the role ID exists
         const existingRole = await Role.findById(roleId);
         if (!existingRole) {
@@ -34,17 +35,17 @@ exports.createUser = async(req, res)=>{
         });
         //End
         //Create auth token
-        const data = {
-            user:{
-                id: user.id
-            }
-        }
-        const authToken = jwt.sign(data, contant.JWT_SECRET);
+        // const data = {
+        //     user:{
+        //         id: user.id
+        //     }
+        // }
+        // const authToken = jwt.sign(data, contant.JWT_SECRET);
         //End
         //Send responce
         res.json({
             status: true,
-            authToken: authToken,
+            // authToken: authToken,
             message: message.auth.createUser
         });
         //End
@@ -230,7 +231,6 @@ exports.deleteUser = async(req, res) =>{
 exports.getLoggedInUser = async (req, res) => {
     try {
       const userId = req.user.id; // Get the user ID from the authenticated token
-      console.log(req);
       // Find the user by ID
       const user = await User.findById(userId);
       if (!user) {
@@ -291,10 +291,9 @@ exports.updateProfile = async (req, res) => {
     return res.json({
       status: true,
       user: updatedUser,
-      message: 'Profile updated'
+      message: message.user.profileUpdated
     });
   } catch (error) {
-    console.log(error, "error");
     return res.json({
       status: false,
       message: message.auth.serverError
@@ -303,3 +302,50 @@ exports.updateProfile = async (req, res) => {
 };
   
   // Get logged-in user details
+  // Change Password
+exports.changePassword = async(req, res)=>{
+  try {
+    const { current_password, new_password } = req.body;
+    const userId = req.user.id; // Get the user ID from the authenticated token
+     // Find the user by ID
+     const user = await User.findById(userId);
+     if (!user) {
+      return res.json({
+        status: false,
+        message: message.auth.userNotFound
+      });
+    }
+    const isPasswordMatch = await bcrypt.compare(current_password, user.password);
+    if (!isPasswordMatch) {
+      return res.json({
+        status: false,
+        message: message.password.currentPasswordIncorrect
+      });
+    }
+    const isSamePassword = await bcrypt.compare(new_password, user.password);
+
+    if (isSamePassword) {
+      return res.json({
+        status: false,
+        message: message.password.differentPassword
+      });
+    }
+    // const hashedPassword = await bcrypt.hash(new_password, 10);
+    const salt = await bcrypt.genSalt(constants.LIMIT.ITEMTEN);
+    const setSecurePassword = await bcrypt.hash(new_password, salt);
+    user.password = setSecurePassword;
+    await user.save();
+
+    return res.json({
+      status: true,
+      message: message.password.passwordChange
+    });    
+  } catch (error) {
+    console.log(error)
+    return res.json({
+      status: false,
+      message: message.auth.serverError
+    });
+  }
+}
+// End
